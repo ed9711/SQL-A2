@@ -11,15 +11,19 @@ import java.util.List;
 //import java.util.HashSet;
 public class Assignment2 extends JDBCSubmission {
 
-    public Assignment2() throws ClassNotFoundException {
+	Connection conn;
+	PreparedStatement pStatement;
+    ResultSet rs;
+    String queryString;
 
-        Class.forName("org.postgresql.Driver");
-    }
+	public Assignment2() throws ClassNotFoundException {
 
-    @Override
+		Class.forName("org.postgresql.Driver");
+	}
+
+	@Override
     public boolean connectDB(String url, String username, String password) {
         // Implement this method!
-	Connection conn;
         try {
             Class.forName("org.postgresql.Driver");
          }
@@ -30,32 +34,46 @@ public class Assignment2 extends JDBCSubmission {
         try
         {
             conn = DriverManager.getConnection(url, username, password);
+            
+            
+            }
+        catch (SQLException e) {
+            return false;
+    }
+        return true;
 	}
-	return true;
+
+	@Override
+	public boolean disconnectDB() {
+		try {
+	        if (conn != null && !conn.isClosed()) {
+	            conn.close();
+	        }
+	        if (rs != null && !rs.isClosed()) rs.close();
+	        if (pStatement != null && !pStatement.isClosed()) pStatement.close();
+	        return (connection == null || connection.isClosed());
+	    }
+	    catch (SQLException e) {
+	        //e.printStackTrace();
+	        return false;
+	}
 	}
 
-    @Override
-    public boolean disconnectDB() {
-        // Implement this method!
-        return false;
-    }
+	@Override
+	public ElectionCabinetResult electionSequence(String countryName) {
+		// Implement this method!
+		return null;
+	}
 
-    @Override
-    public ElectionCabinetResult electionSequence(String countryName) {
-        // Implement this method!
-        return null;
-    }
+	@Override
+	public List<Integer> findSimilarPoliticians(Integer politicianName, Float threshold) {
+		// Implement this method!
+		return null;
+	}
 
-    @Override
-    public List<Integer> findSimilarPoliticians(Integer politicianName, Float threshold) {
-        // Implement this method!
-        return null;
-    }
-
-    public static void main(String[] args) {
-        // You can put testing code in here. It will not affect our autotester.
-        System.out.println("Hello");
-    }
+	public static void main(String[] args) {
+		// You can put testing code in here. It will not affect our autotester.
+		System.out.println("Hello");
+	}
 
 }
-
