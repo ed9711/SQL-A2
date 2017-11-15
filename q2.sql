@@ -42,11 +42,12 @@ DROP VIEW IF EXISTS avg_win CASCADE;
 -- Define views for your intermediate steps here.
 
 create temp view avg_win as 
-	select country.name as countryName, party.name as partyName, fmaily as partyFamily
-	from country, party, party_family, party_count
-	where party.country_id = country.id and party.id = party_family.party_id and party.id = party_count.party_id;
+	select country.id as country_id, avg(wins)
+	from country, party_count, party
+	where party.id = party_count.party_id and party.country_id = country.id
+	group by country.id;
 
-	
+
 
 
 -- the answer to the query 
