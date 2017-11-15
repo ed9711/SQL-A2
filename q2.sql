@@ -33,24 +33,36 @@ create temp view winning as
 
 drop view if exists party_count cascade;
 create temp view party_count as
-	select party_id, count(election_id) as wins
-	from winning
-	group by party_id;
+	select party_count.party_id, count(election_id) as wins, county_id
+	from winning, party
+	where party.id = party_count.party_id
+	group by party_count.party_id;
 
 DROP VIEW IF EXISTS avg_win CASCADE;
 
 -- Define views for your intermediate steps here.
 
 create temp view avg_win as 
-	select country.id as country_id, avg(wins)
-	from country, party_count, party
-	where party.id = party_count.party_id and party.country_id = country.id
+	select country.id as country_id, avg(wins) as avg_wins
+	from country, party_count
+	where party_count.country_id = country.id
 	group by country.id;
 
-
+drop view if exists answer cascade;
+create temp view answer as
+	select party_count.country_id, party_count.party_id, party_count.wins
+	from party_count, avg_win
+	where party_count.country_id = avg_win.country_id and party_count.win > 3*avg_wins;
+	
+drop view if exists recentWon cascade;
+create temp view recentWon as
+	select 
+	from party_count, winning
 
 
 -- the answer to the query 
 insert into q2 
+	select countryName, partyName, partyFamily, wonElections, mostRecentlyWonElectionId, mostRecentlyWonElectionYear
+	from country, party, answer, party_family, election
 
 
