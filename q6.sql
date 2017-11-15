@@ -18,6 +18,7 @@ CREATE TABLE q6(
 DROP VIEW IF EXISTS intermediate_step CASCADE;
 
 -- Define views for your intermediate steps here.
+select id, country_id, start_date, lead(start_date)over ((country_id = lead(country_d)order by country_id, start_date) order by country_id, start_date) as end_date from cabinet;
 
 
 -- the answer to the query 

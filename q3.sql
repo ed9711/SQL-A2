@@ -24,12 +24,12 @@ create temp view ratio_election as
 
 drop view if exists same_year cascade;
 create temp view same_year as
-	select r1.country_id, avg(r1.p_ratio) as p_ratio, extract(year from r1.e_date)
+	select r1.country_id, avg(r1.p_ratio) as p_ratio, extract(year from r1.e_date) as year
 	from ratio_election r1
 	group by r1.country_id, extract(year from r1.e_date);
 
-drop view if exists 2001to2016 cascade;
-create temp view 2001to2016 as
+drop view if exists to2001_2016 cascade;
+create temp view to2001_2016 as
 	select country_id, p_ratio, year
 	from same_year
 	where year <= 2016 and year >= 2001;
@@ -37,15 +37,15 @@ create temp view 2001to2016 as
 drop view if exists decreasing cascade;
 create temp view decreasing as
 	select distinct t1.country_id
-	from 2001to2016 t1, 2001to2016 t2
+	from to2001_2016 t1, to2001_2016 t2
 	where t1.country_id = t2.country_id and t1.year < t2.year and t1.p_ratio > t2.p_ratio;
 
 -- the answer to the query 
 insert into q3 
-	select country.name as countryName, 2001to2016.year as year, 2001to2016.p_ratio as participationRatio
-	from 2001to2016, country
+	select country.name as countryName, to2001_2016.year as year, to2001_2016.p_ratio as participationRatio
+	from to2001_2016, country
 	where not exists (select 1 
 						from decreasing
-						where decreasing.country_id = 2001to2016.country_id)
-			and 2001to2016.country_id = country.id;
+						where decreasing.country_id = to2001_2016.country_id)
+			and to2001_2016.country_id = country.id;
 
