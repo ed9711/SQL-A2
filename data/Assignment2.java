@@ -145,8 +145,15 @@ public class Assignment2 extends JDBCSubmission {
 			e.printStackTrace();
 		}
 		boolean result = a2.connectDB("jdbc:postgresql://localhost:5432/csc343h-nizhison", "nizhison", "");
+		
+		String countryName = "Germany";
+        ElectionCabinetResult temp = a2.electionSequence(countryName);     
+        System.out.println(temp);
+        boolean result1 = a2.disconnectDB();
+		
 		System.out.println("Hello");
 		System.out.println(result);
+		System.out.println(result1);
 	}
 
 }
