@@ -28,6 +28,9 @@ public class Assignment2 extends JDBCSubmission {
         try
         {
             conn = DriverManager.getConnection(url, username, password);
+            queryString = "SET SEARCH_PATH TO parlgov;";
+            pStatement = conn.prepareStatement(queryString);
+            pStatement.execute();
             
             
             }
