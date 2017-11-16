@@ -71,6 +71,7 @@ public class Assignment2 extends JDBCSubmission {
 			}
 			
 		} catch (SQLException e) {
+			System.out.println("error1");
 				return null;
 		}
 		
@@ -99,6 +100,7 @@ public class Assignment2 extends JDBCSubmission {
 				
 			}
 		} catch (SQLException e) {
+				System.out.println("error2");
 				return null;
 		}
 		
