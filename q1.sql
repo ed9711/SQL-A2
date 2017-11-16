@@ -22,14 +22,22 @@ DROP VIEW IF EXISTS elections19962016 CASCADE;
 create TEMP VIEW elections19962016 as 
 	select extract(year from e_date) as year, country_id, party_id, votes/votes_valid::float * 100 as votes
 	from election, election_result
-	where election_result.election_id = election.id and 1996 <= extract(year from e_date) and extract(year from e_date) <= 		2016;	
+	where election_result.election_id = election.id and 1996 <= extract(year from e_date) 
+		and extract(year from e_date) <= 2016 and votes is not null and votes_valid is not null;
 
+
+drop view if exists add_avg cascade;
+create temp view add_avg as
+	select e1.country_id, avg(e1.votes) as votes, year, party_id
+	from elections19962016 e1
+	group by e1.country_id, year, party_id;
+		
 DROP VIEW IF EXISTS with_names CASCADE;
 
 create TEMP VIEW with_names as 
-	select year, name as countryName, votes, name_short as partyName
-	from elections19962016, party, country
-	where party.id = party_id and country.id = country_id;
+	select year, country.name as countryName, votes, name_short as partyName
+	from add_avg, party, country
+	where party.id = add_avg.party_id and country.id = add_avg.country_id;
 
 DROP table IF EXISTS range CASCADE;
 
@@ -44,12 +52,13 @@ insert into range values
 (10, 20, '(10-20]'),
 (20, 30, '(20-30]'),
 (30, 40, '(30-40]'),
-(40, 100, '(40-]');
+(40, 100, '(40-100]');
 
 
 	
 -- the answer to the query 
-insert into q1 select year, countryName, bound as voteRange, partyName
-		from with_names, range
-		where votes > lowerb and votes <= upperb; 
+insert into q1 
+	select distinct year, countryName, bound as voteRange, partyName
+	from with_names, range
+	where votes > lowerb and votes <= upperb; 
 

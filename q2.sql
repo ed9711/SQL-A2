@@ -77,7 +77,7 @@ create temp view combine as
 insert into q2 
 	select distinct country.name as countryName, party.name as partyName, pt.family as partyFamily,
 		pt.wins as wonElections, pt.election_id as mostRecentlyWonElectionId, 
-		extract(year from pt.date) as mostRecentlyWonElectionYear
+		extract(year from pt.dates) as mostRecentlyWonElectionYear
 	from country, (party_family right join combine on party_family.party_id = combine.party_id1) as pt, party
 	where pt.country_id = country.id and party.id = pt.party_id1;
 

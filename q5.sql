@@ -21,7 +21,7 @@ DROP VIEW IF EXISTS cabinet20 CASCADE;
 create temp view cabinet20 as
 	select id, country_id
 	from cabinet
-	where extract(year from start_date) >= 1997;
+	where extract(year from start_date) >= 1996;
 
 	
 drop view if exists number_cabinet cascade;
@@ -46,4 +46,5 @@ insert into q5
 	select country.name as countryName, pt1.name as partyName, pt1.family as partyFamily, pt1.state_market as stateMarket
 	from country, answer, ((party left join party_family on party.id = party_family.party_id) as pt 
 		left join party_position on pt.id = party_position.party_id) as pt1
-	where country.id = answer.country_id and pt1.id = answer.id;
+	where country.id = answer.country_id and pt1.id = answer.id
+	group by country.name, pt1.name, pt1.family, pt1.state_market;
